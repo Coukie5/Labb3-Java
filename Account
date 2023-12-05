@@ -1,0 +1,71 @@
+package lab3;
+import java.util.ArrayList;
+
+public class Account{
+	//Class attributes
+	private static int accountNumbers = 1;
+	private String customer;
+	private int thisAccountNumber;
+	private double balance;
+	protected static Bank theBank;
+	protected Account otherAccount;
+	protected ArrayList<String> transactions = new ArrayList<String>();
+	
+	public Account(String arg1, double arg2) {
+		customer = arg1;
+		balance = arg2;
+		thisAccountNumber = accountNumbers;
+		accountNumbers++;
+	}
+	public Account(String arg1, double arg2, double arg3) {
+		this.customer = arg1;
+		this.balance = arg2;
+		this.thisAccountNumber = accountNumbers;
+		accountNumbers++;
+		
+		SavingsAccount sAccount = new SavingsAccount(arg1, arg3);
+		this.otherAccount = sAccount;
+		sAccount.otherAccount = this;
+	}
+	
+	public int getAccountNumber() {
+		return thisAccountNumber;
+	}
+	public String getCustomer() {
+		return customer;
+	}
+	public double getBalance() {
+		return balance;
+	}
+	public void setBalance(double arg) {
+		balance = arg;
+	}
+	
+	public static void setBank(Bank arg) {
+		theBank = arg;
+	}
+	public SavingsAccount getSavingsAccount() {
+		if (this.otherAccount == null) {
+			return null;
+		}
+		return (SavingsAccount)this.otherAccount;
+	}
+	
+	public String toString() {
+		String s = "";
+		
+		if (this instanceof CurrentAccount) {
+			s += "Current account: ";
+		}else {
+			s += "Savings account: ";
+		}
+		
+		s += String.format("with account number %d: %.1f\n", thisAccountNumber, balance);
+		for (String e : transactions) {
+			s += e + "\n";
+		}
+		return s;
+	}
+	
+}
+
