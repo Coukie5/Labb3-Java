@@ -1,0 +1,81 @@
+package lab3;
+import java.util.ArrayList;
+
+public class Bank {
+	public final String NAME;
+	private ArrayList<Account> theAccounts = new ArrayList<Account>();
+	
+	public Bank(String arg) {
+		NAME = arg;
+		Account.setBank(this);
+	}
+	
+	public CurrentAccount searchAccount(String arg) {
+		for (Account a : theAccounts) {
+			String name = a.getCustomer();
+			if (name.compareTo(arg) == 0) {
+				return (CurrentAccount)a;
+			}
+		}
+		return null;
+	}
+	
+	public String createAccount(String arg1, double arg2, double arg3) {
+		if (searchAccount(arg1) == null) {
+			CurrentAccount currentAccount = new CurrentAccount(arg1, arg2, arg3);
+			theAccounts.add(currentAccount);
+			theAccounts.add(currentAccount.otherAccount);
+			
+			return "Current and savings account created for " + arg1;
+		}
+		return "Account(s) already exists for " + arg1;
+	}
+	
+	public String createAccount(String arg1, double arg2) {
+		if (searchAccount(arg1) == null) {
+			CurrentAccount currentAccount = new CurrentAccount(arg1, arg2);
+			theAccounts.add(currentAccount);
+			
+			return "Current account created for " + arg1;
+		}
+		return "Account(s) already exists for " + arg1;
+	}
+	
+	public void currentToSavings(String arg1, double arg2) {
+		CurrentAccount currentAccount = searchAccount(arg1);
+		currentAccount.savings(arg2);
+	}
+	
+	public String checkPerson(String arg) {
+		String s = arg + "\n";
+		CurrentAccount currentAccount = searchAccount(arg);
+		if (currentAccount != null) {
+			s += currentAccount.toString();
+		}
+		else {
+			return "Person does not exist";
+		}
+		
+		SavingsAccount savingsAccount = currentAccount.getSavingsAccount();
+		if (savingsAccount != null) {
+			s += "\n" + savingsAccount.toString();
+		}
+		return s;
+	}
+	
+	public String toString() {
+		String s = String.format("Bank: %s\nAccounts: %d\n", NAME, theAccounts.size());
+				
+		double currentAccountTotal = 0;
+		double savingsAccountTotal = 0;
+		for (Account a : theAccounts) {
+			if (a instanceof CurrentAccount) {
+				currentAccountTotal += a.getBalance();
+			}else {
+				savingsAccountTotal += a.getBalance();
+			}
+		}
+		s += String.format("Money in current / savings accounts: %.1f / %.1f", currentAccountTotal, savingsAccountTotal);
+		return s;
+	}
+}
