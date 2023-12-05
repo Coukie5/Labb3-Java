@@ -1,0 +1,53 @@
+package lab3;
+
+public class CurrentAccount extends Account {
+	public CurrentAccount(String arg1, double arg2) {
+		super(arg1, arg2);
+		this.otherAccount = null;
+	}
+	
+	public CurrentAccount(String arg1, double arg2, double arg3) {
+		super(arg1, arg2, arg3);
+	}
+	
+	public void savings(double arg) {
+		double transferredBalance = 0;
+		
+		if(this.otherAccount != null) {
+			if (arg > 0) {
+				//from current to savings
+				if (this.getBalance() >= arg) {
+					transferredBalance = arg;
+					
+					this.otherAccount.setBalance(this.otherAccount.getBalance() + arg);
+					this.setBalance(this.getBalance() - arg);
+					
+				}else if (this.getBalance() < arg) {
+					transferredBalance = this.getBalance();
+					this.otherAccount.setBalance(this.otherAccount.getBalance() + this.getBalance());
+					this.setBalance(0);
+				}
+				this.transactions.add("To Savings account: " + transferredBalance);
+				this.otherAccount.transactions.add("From current account: " + transferredBalance);
+			}
+			
+			if (arg <= 0) {
+				// from saving to current
+				if (this.otherAccount.getBalance() >= (arg * -1)) {
+					transferredBalance = (arg * -1);
+					
+					this.otherAccount.setBalance(this.otherAccount.getBalance() + arg);
+					this.setBalance(this.getBalance() - arg);
+					
+				}else if (this.otherAccount.getBalance() < (arg * -1)){
+					transferredBalance = this.otherAccount.getBalance();
+					
+					this.setBalance(this.getBalance() - this.otherAccount.getBalance());
+					this.otherAccount.setBalance(0);
+				}
+				this.transactions.add("From savings account: " + transferredBalance);
+				this.otherAccount.transactions.add("to current account: " + transferredBalance);
+			}
+		}
+	}
+}
